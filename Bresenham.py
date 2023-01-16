@@ -6,7 +6,7 @@ pygame.init()
 
 size = (700, 700)
 screen_surface = pygame.display.set_mode(size, 0, 32)
-pygame.display.set_caption("DDA Line Drawing Algorithm")
+pygame.display.set_caption("Bresenham's Line Drawing Algorithm")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
