@@ -2,21 +2,13 @@ import pygame, sys
 from pygame.locals import *
 from pygame import gfxdraw
 
-pygame.init()
+from InterfaceInit import init
 
-size = (700, 700)
-screen_surface = pygame.display.set_mode(size, 0, 32)
-pygame.display.set_caption("DDA Line Drawing Algorithm")
-
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 128, 0)
-BLUE = (0, 0, 255)
-
-screen_surface.fill(BLACK)
+screen_surface = init("Bresenham's Line Drawing")
 
 # Our logic is here
+WHITE = (255, 255, 255)
+
 def drawVerticalLine(xStart, yStart, xEnd, yEnd):
     if yStart > yEnd:
         temp = yStart
@@ -41,32 +33,58 @@ def drawHorizontalLine(xStart, yStart, xEnd, yEnd):
         x = x + 1
     gfxdraw.pixel(screen_surface, xEnd, yEnd, WHITE)
 
-def drawLineX(xStart, yStart, xEnd, yEnd, m):
+def bresenhamX(xStart, yStart, xEnd, yEnd, threshold):
+    xStart = xStart * threshold
+    xEnd = xEnd * threshold
+
     if xStart > xEnd:
         xStart, xEnd = xEnd, xStart
         yStart, yEnd = yEnd, yStart
 
+    dx = xEnd - xStart
+    dy = yEnd - yStart
+    d = 2*dy - dx
+    dT = 2*(dy-dx)
+    dS = 2*dy
+
     x = xStart
     y = yStart
-    while x < xEnd:
-        gfxdraw.pixel(screen_surface, x, round(y), WHITE)
+    while x<xEnd:
+        gfxdraw.pixel(screen_surface, x*threshold, y, WHITE)
         x = x+1
-        y = y+m
+        if d<0:
+            d = d + dS
+        else:
+            y = y+1
+            d = d + dT
     gfxdraw.pixel(screen_surface, xEnd, yEnd, WHITE)
 
-def drawLineY(xStart, yStart, xEnd, yEnd, r_m):
-    print("drawing line by increasing y")
+def bresenhamY(xStart, yStart, xEnd, yEnd, threshold):
+    yStart = yStart * threshold
+    yEnd = yEnd * threshold
+
     if yStart > yEnd:
         xStart, xEnd = xEnd, xStart
         yStart, yEnd = yEnd, yStart
 
+    dx = xEnd - xStart
+    dy = yEnd - yStart
+    d = 2 * dx - dy
+    dT = 2 * (dx - dy)
+    dS = 2 * dx
+
     x = xStart
     y = yStart
     while y < yEnd:
-        gfxdraw.pixel(screen_surface, round(x), y, WHITE)
-        y = y+1
-        x = x+r_m
+        gfxdraw.pixel(screen_surface, x * threshold, y, WHITE)
+        y = y + 1
+        if d < 0:
+            d = d + dS
+        else:
+            x = x + 1
+            d = d + dT
     gfxdraw.pixel(screen_surface, xEnd, yEnd, WHITE)
+
 
 def display(xStart, yStart, xEnd, yEnd):
     dx = xEnd - xStart
@@ -75,15 +93,22 @@ def display(xStart, yStart, xEnd, yEnd):
     if dx == 0:
         drawVerticalLine(xStart, yStart, xEnd, yEnd)
         return
-    if dy == 0:
+    elif dy == 0:
         drawHorizontalLine(xStart, yStart, xEnd, yEnd)
         return
 
     m = dy/dx
-    if abs(m) <= 1:
-        drawLineX(xStart, yStart, xEnd, yEnd, m)
-    else:
-        drawLineY(xStart, yStart, xEnd, yEnd, 1/m)
+    if m > 0 and m<1:
+        bresenhamX(xStart, yStart, xEnd, yEnd, 1)
+
+    elif m < 0 and m > -1:
+        bresenhamX(xStart, xEnd, yStart, yEnd, -1)
+
+    elif m >= 1:
+        bresenhamY(xStart, yStart, xEnd, yEnd, 1)
+    elif m <= -1:
+        bresenhamY(xStart, yStart, xEnd, yEnd, -1)
+#
 
 xStart = int(input())
 yStart = int(input())
@@ -91,7 +116,6 @@ xEnd = int(input())
 yEnd = int(input())
 
 display(xStart, yStart, xEnd, yEnd)
-#
 
 pygame.display.flip()
 
