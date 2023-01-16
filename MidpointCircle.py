@@ -6,7 +6,7 @@ pygame.init()
 
 size = (700, 700)
 screen_surface = pygame.display.set_mode(size, 0, 32)
-pygame.display.set_caption("Bresenham's Circle Drawing Algorithm")
+pygame.display.set_caption("Midpoint Circle Drawing Algorithm")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -30,17 +30,17 @@ def eight_way_symmetric_plot(xc, yc, x, y):
 def display(xc, yc, r):
     x = 0
     y = r
-    d = 3-2*r
-    eight_way_symmetric_plot(xc, yc, x, y)
+    p = 1-r
 
     while x <= y:
-        if d <= 0:
-            d = d + (4 * x) + 6
-        else:
-            d = d + 4 *(x - y) + 10
-            y = y-1
-        x = x+1
         eight_way_symmetric_plot(xc, yc, x, y)
+        x = x+1
+
+        if p < 0:
+            p = p + 2 * x + 1
+        else:
+            p = p + 2 *(x - y) + 1
+            y = y-1
 
 xc = int(input())
 yc = int(input())
