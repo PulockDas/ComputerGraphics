@@ -57,9 +57,10 @@ def bresenhamX(xStart, yStart, xEnd, yEnd, threshold):
         else:
             y = y+1
             d = d + dT
-    gfxdraw.pixel(screen_surface, xEnd, yEnd, WHITE)
+    gfxdraw.pixel(screen_surface, xEnd*threshold, yEnd, WHITE)
 
 def bresenhamY(xStart, yStart, xEnd, yEnd, threshold):
+    print("drawing line by increasing y")
     yStart = yStart * threshold
     yEnd = yEnd * threshold
 
@@ -76,14 +77,14 @@ def bresenhamY(xStart, yStart, xEnd, yEnd, threshold):
     x = xStart
     y = yStart
     while y < yEnd:
-        gfxdraw.pixel(screen_surface, x * threshold, y, WHITE)
+        gfxdraw.pixel(screen_surface, x, y*threshold, WHITE)
         y = y + 1
         if d < 0:
             d = d + dS
         else:
             x = x + 1
             d = d + dT
-    gfxdraw.pixel(screen_surface, xEnd, yEnd, WHITE)
+    gfxdraw.pixel(screen_surface, xEnd, yEnd*threshold, WHITE)
 
 
 def display(xStart, yStart, xEnd, yEnd):
